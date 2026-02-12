@@ -16,7 +16,7 @@ function MainComponent() {
   const insets = useSafeAreaInsets()
   const { theme } = useContext(ThemeContext)
   const styles = getStyles({ theme, insets })
-  
+
   return (
     <View style={styles.container}>
       <Tab.Navigator
@@ -84,13 +84,13 @@ export function Main() {
   )
 }
 
-const getStyles = ({ theme, insets } : { theme: any, insets: any}) => StyleSheet.create({
+const getStyles = ({ theme, insets }: { theme: any, insets: any }) => StyleSheet.create({
   container: {
     backgroundColor: theme.backgroundColor,
     flex: 1,
-    paddingTop: insets.top,
-    paddingBottom: insets.bottom,
-    paddingLeft: insets.left,
-    paddingRight: insets.right,
+    paddingTop: insets.top + 1,
+    paddingBottom: insets.bottom + 1,
+    paddingLeft: insets.left + 1,
+    paddingRight: insets.right + 1,
   },
 })
