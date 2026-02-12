@@ -91,12 +91,12 @@ export function Assistant() {
         localInput.instructions = instructions
       }
       setOpenaiResponse([localInput])
-  
+
       setInput('')
       setInstructions('')
       setLoading(true)
       setFile(null)
-  
+
       const body: {
         input: string,
         instructions?: string
@@ -125,7 +125,7 @@ export function Assistant() {
             'Content-Type': 'multipart/form-data'
           }
         }).then(res => res.json())
-        
+
       } else {
         response = await fetch(`${DOMAIN}/chat/create-assistant`, {
           method: 'POST',
@@ -139,7 +139,7 @@ export function Assistant() {
       const {
         assistantId: _assistantId, threadId: _threadId, runId: _runId
       } = await response
-    
+
       setThreadId(_threadId)
       setAssistantId(_assistantId)
       checkThread(_runId, _threadId)
@@ -182,8 +182,8 @@ export function Assistant() {
       }).then(res => res.json())
 
       const { data } = thread
-      let localResponse:any = []
-      
+      let localResponse: any = []
+
       data.data.forEach((data) => {
         data.content.forEach(({ text }) => {
           if (data.role === 'assistant') {
@@ -207,7 +207,7 @@ export function Assistant() {
     }
   }
 
-  
+
 
   async function addMessageToThread() {
     try {
@@ -224,7 +224,7 @@ export function Assistant() {
       setInput('')
       setLoading(true)
       setFile(null)
-  
+
       const body: {
         input: string,
         thread_id: string,
@@ -277,7 +277,6 @@ export function Assistant() {
   async function chooseDocument() {
     try {
       const res = await DocumentPicker.getDocumentAsync()
-      console.log('res: ', res)
       if (!res || !res.assets) return
       setFile(res.assets[0])
     } catch (err) {
@@ -286,28 +285,28 @@ export function Assistant() {
   }
 
   const styles = getStyleSheet(theme)
-  const isStarted = openaiResponse.length 
+  const isStarted = openaiResponse.length
 
   function renderItem({ item, index }) {
     return (
       <View style={styles.promptResponse} key={index}>
-          {
-            item.type === 'user' && (
-              <View style={styles.promptTextContainer}>
-                <View style={styles.promptTextWrapper}>
-                  <Text style={styles.promptText}>
-                    {item.value}
-                  </Text>
-                </View>
+        {
+          item.type === 'user' ? (
+            <View style={styles.promptTextContainer}>
+              <View style={styles.promptTextWrapper}>
+                <Text style={styles.promptText}>
+                  {item.value}
+                </Text>
               </View>
-            )
-          }
-          {
-            item.type === 'assistant' && (
-              <View style={styles.textStyleContainer}>
-                <Markdown
-                  style={styles.textStyle}
-                >{item.value}</Markdown>
+            </View>
+          ) : <View></View>
+        }
+        {
+          item.type === 'assistant' && (
+            <View style={styles.textStyleContainer}>
+              <Markdown
+                style={styles.textStyle}
+              >{item.value}</Markdown>
               <TouchableHighlight
                 onPress={() => showClipboardActionsheet(item.assistant)}
                 underlayColor={'transparent'}
@@ -320,20 +319,20 @@ export function Assistant() {
                   />
                 </View>
               </TouchableHighlight>
-              </View>
-            )
-          }
+            </View>
+          )
+        }
       </View>
     )
   }
 
 
   return (
-      <KeyboardAvoidingView
-        behavior="padding"
-        style={styles.container}
-        keyboardVerticalOffset={110}
-      >
+    <KeyboardAvoidingView
+      behavior="padding"
+      style={styles.container}
+      keyboardVerticalOffset={110}
+    >
       <ScrollView
         ref={scrollViewRef}
         keyboardShouldPersistTaps='handled'
@@ -391,28 +390,28 @@ export function Assistant() {
                 </TouchableHighlight>
                 {
                   file && (
-                      <View style={styles.midFileNameContainer}>
-                        <Text style={styles.fileName}>
-                          {file.name || 'File from device'}
-                        </Text>
-                        <TouchableHighlight
-                          onPress={() => setFile(null)}
-                          style={styles.closeIconContainer}
-                          underlayColor={'transparent'}
-                        >
-                          <MaterialCommunityIcons
-                            style={styles.closeIcon}
-                            name="close"
-                            color={theme.textColor}
-                            size={14}
-                          />
-                        </TouchableHighlight>
-                      </View>
-                    )
-                  }
-                  <Text style={styles.chatDescription}>
-                    Chat with an assistant (with optional instructions and file interpreter)
-                  </Text>
+                    <View style={styles.midFileNameContainer}>
+                      <Text style={styles.fileName}>
+                        {file.name || 'File from device'}
+                      </Text>
+                      <TouchableHighlight
+                        onPress={() => setFile(null)}
+                        style={styles.closeIconContainer}
+                        underlayColor={'transparent'}
+                      >
+                        <MaterialCommunityIcons
+                          style={styles.closeIcon}
+                          name="close"
+                          color={theme.textColor}
+                          size={14}
+                        />
+                      </TouchableHighlight>
+                    </View>
+                  )
+                }
+                <Text style={styles.chatDescription}>
+                  Chat with an assistant (with optional instructions and file interpreter)
+                </Text>
               </View>
             </View>
           )
@@ -435,7 +434,7 @@ export function Assistant() {
         }
       </ScrollView>
       {
-       Boolean(isStarted) && file && (
+        Boolean(isStarted) && file && (
           <View style={styles.fileNameContainer}>
             <Text style={styles.fileName}>
               {file.name || 'File from device'}
@@ -515,7 +514,7 @@ const getStyleSheet = theme => StyleSheet.create({
     borderRadius: 8,
     marginBottom: 5,
     marginTop: 10,
-    borderWidth:1,
+    borderWidth: 1,
     borderColor: theme.borderColor
   },
   optionsIconWrapper: {
