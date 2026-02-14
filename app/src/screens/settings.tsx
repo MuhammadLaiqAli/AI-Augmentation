@@ -13,8 +13,7 @@ import {
   AnthropicIcon,
   GeminiIcon,
   OpenAIIcon
- } from '../components/index'
-import FontAwesome from '@expo/vector-icons/FontAwesome5'
+} from '../components/index'
 import { IIconProps } from '../../types'
 import { MODELS, IMAGE_MODELS } from '../../constants'
 import * as themes from '../theme'
@@ -65,8 +64,8 @@ export function Settings() {
         style={styles.titleContainer}
       >
         <Text
-            style={styles.mainText}
-        >Theme</Text>
+          style={styles.mainText}
+        >Current Theme</Text>
       </View>
       {
         _themes.map((value, index) => (
@@ -83,22 +82,22 @@ export function Settings() {
                 ...getDynamicViewStyle(themeName, value.label, theme)
               }}
             >
-            <Text
-              style={{
-                ...styles.chatTypeText,
-                ...getDynamicTextStyle(themeName, value.label, theme)
-              }}
-            >
-              {value.name}
-            </Text>
-          </View>
-        </TouchableHighlight>
+              <Text
+                style={{
+                  ...styles.chatTypeText,
+                  ...getDynamicTextStyle(themeName, value.label, theme)
+                }}
+              >
+                {value.name}
+              </Text>
+            </View>
+          </TouchableHighlight>
         ))
       }
       <View
         style={styles.titleContainer}
       >
-      <Text
+        <Text
           style={styles.mainText}
         >Chat Model</Text>
       </View>
@@ -114,26 +113,26 @@ export function Settings() {
                 }}
               >
                 <View
-                  style={{...styles.chatChoiceButton, ...getDynamicViewStyle(chatType.label, model.label, theme)}}
+                  style={{ ...styles.chatChoiceButton, ...getDynamicViewStyle(chatType.label, model.label, theme) }}
                 >
-                {
-                  renderIcon({
-                    type: model.label,
-                    props: {
-                      theme,
-                      size: 18,
-                      style: {marginRight: 8},
-                      selected: chatType.label === model.label
-                    }
-                  })
-                }
-                <Text
-                  style={{...styles.chatTypeText, ...getDynamicTextStyle(chatType.label, model.label, theme)}}
-                >
-                  { model.name }
-                </Text>
-              </View>
-            </TouchableHighlight>
+                  {
+                    renderIcon({
+                      type: model.label,
+                      props: {
+                        theme,
+                        size: 18,
+                        style: { marginRight: 8 },
+                        selected: chatType.label === model.label
+                      }
+                    })
+                  }
+                  <Text
+                    style={{ ...styles.chatTypeText, ...getDynamicTextStyle(chatType.label, model.label, theme) }}
+                  >
+                    {model.name}
+                  </Text>
+                </View>
+              </TouchableHighlight>
             )
           })
         }
@@ -141,7 +140,7 @@ export function Settings() {
       <View
         style={styles.titleContainer}
       >
-      <Text
+        <Text
           style={styles.mainText}
         >Image Model</Text>
       </View>
@@ -157,26 +156,26 @@ export function Settings() {
                 }}
               >
                 <View
-                  style={{...styles.chatChoiceButton, ...getDynamicViewStyle(imageModel, model.label, theme)}}
+                  style={{ ...styles.chatChoiceButton, ...getDynamicViewStyle(imageModel, model.label, theme) }}
                 >
-                {
-                  renderIcon({
-                    type: model.label,
-                    props: {
-                      theme,
-                      size: 18,
-                      style: {marginRight: 8},
-                      color: imageModel === model.label ? theme.tintTextColor : theme.textColor
-                    }
-                  })
-                }
-                <Text
-                  style={{...styles.chatTypeText, ...getDynamicTextStyle(imageModel, model.label, theme)}}
-                >
-                  { model.name }
-                </Text>
-              </View>
-            </TouchableHighlight>
+                  {
+                    renderIcon({
+                      type: model.label,
+                      props: {
+                        theme,
+                        size: 18,
+                        style: { marginRight: 8 },
+                        color: imageModel === model.label ? theme.tintTextColor : theme.textColor
+                      }
+                    })
+                  }
+                  <Text
+                    style={{ ...styles.chatTypeText, ...getDynamicTextStyle(imageModel, model.label, theme) }}
+                  >
+                    {model.name}
+                  </Text>
+                </View>
+              </TouchableHighlight>
             )
           })
         }
@@ -185,7 +184,7 @@ export function Settings() {
   )
 }
 
-function getDynamicTextStyle(baseType:string, type:string, theme:any) {
+function getDynamicTextStyle(baseType: string, type: string, theme: any) {
   if (type === baseType) {
     return {
       color: theme.tintTextColor,
@@ -194,7 +193,7 @@ function getDynamicTextStyle(baseType:string, type:string, theme:any) {
 }
 
 
-function getDynamicViewStyle(baseType:string, type:string, theme:any) {
+function getDynamicViewStyle(baseType: string, type: string, theme: any) {
   if (type === baseType) {
     return {
       backgroundColor: theme.tintColor
@@ -202,7 +201,7 @@ function getDynamicViewStyle(baseType:string, type:string, theme:any) {
   } else return {}
 }
 
-const getStyles = (theme:any) => StyleSheet.create({
+const getStyles = (theme: any) => StyleSheet.create({
   buttonContainer: {
     marginBottom: 20
   },
