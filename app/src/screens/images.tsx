@@ -130,7 +130,7 @@ export function Images() {
         imagesArray[imagesArray.length - 1].provider = providerLabel
         setImages(i => ({
           index: i.index,
-          values: imagesArray          
+          values: imagesArray
         }))
         setLoading(false)
         setTimeout(() => {
@@ -171,7 +171,7 @@ export function Images() {
     )
   }
 
-  async function copyToClipboard(text:string) {
+  async function copyToClipboard(text: string) {
     await Clipboard.setStringAsync(text)
   }
 
@@ -240,7 +240,7 @@ export function Images() {
         behavior="padding"
         style={styles.container}
         keyboardVerticalOffset={110}
-        >
+      >
         <ScrollView
           contentContainerStyle={!callMade && styles.scrollContentContainer}
           ref={scrollViewRef}
@@ -361,23 +361,23 @@ export function Images() {
                         />
                       </TouchableHighlight>
                       <View style={styles.modelLabelContainer}>
-                          <Text style={
-                            styles.modelLabelText
-                          }>
-                            Created with {v.provider || 'Gemini'} model {v.model}
-                          </Text>
-                        </View>
+                        <Text style={
+                          styles.modelLabelText
+                        }>
+                          Created with {v.provider || 'Gemini'} model {v.model}
+                        </Text>
+                      </View>
                     </View>
                   )
                 }
               </View>
             ))
           }
-          { loading && (
+          {loading && (
             <View style={styles.loadingContainer}>
               <ActivityIndicator />
             </View>
-          ) }
+          )}
         </ScrollView>
         {
           callMade && (
