@@ -20,35 +20,35 @@ async function mockSegmentImage(uri: string): Promise<string> {
   });
 }
 
-// export default function ImageSegmentation() {
-//   const [imageUri, setImageUri] = useState<string | null>(null);
-//   const [segmentedUri, setSegmentedUri] = useState<string | null>(null);
-//   const [loading, setLoading] = useState(false);
+export default function ImageSegmentation() {
+  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [segmentedUri, setSegmentedUri] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-//   const pickImage = async () => {
-//     const result = await ImagePicker.launchImageLibraryAsync({
-//       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-//       quality: 1,
-//     });
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+    });
 
-//     if (!result.canceled && result.assets[0].uri) {
-//       setImageUri(result.assets[0].uri);
-//       setSegmentedUri(null);
-//     }
-//   };
+    if (!result.canceled && result.assets[0].uri) {
+      setImageUri(result.assets[0].uri);
+      setSegmentedUri(null);
+    }
+  };
 
-//   const runSegmentation = async () => {
-//     if (!imageUri) return;
-//     setLoading(true);
-//     try {
-//       const segmented = await mockSegmentImage(imageUri);
-//       setSegmentedUri(segmented);
-//     } catch (err) {
-//       console.error("Segmentation failed:", err);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
+  const runSegmentation = async () => {
+    if (!imageUri) return;
+    setLoading(true);
+    try {
+      const segmented = await mockSegmentImage(imageUri);
+      setSegmentedUri(segmented);
+    } catch (err) {
+      console.error("Segmentation failed:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>

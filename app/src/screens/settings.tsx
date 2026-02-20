@@ -203,7 +203,7 @@ const getStyles = (theme: any) =>
       marginTop: 10,
     },
     chatChoiceButton: {
-      padding: 15,
+      padding: 12,
       borderRadius: 8,
       flexDirection: "row",
     },
@@ -213,7 +213,7 @@ const getStyles = (theme: any) =>
     },
     mainText: {
       fontFamily: theme.boldFont,
-      fontSize: 18,
+      fontSize: 17,
       color: theme.textColor,
     },
   });
