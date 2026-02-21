@@ -5,7 +5,6 @@ import {
   TouchableHighlight,
   ScrollView,
   Dimensions,
-  Image,
 } from "react-native";
 import { useContext } from "react";
 import { AppContext, ThemeContext } from "../context";
@@ -15,12 +14,73 @@ import { MODELS, IMAGE_MODELS } from "../../constants";
 import * as themes from "../theme";
 
 const { width } = Dimensions.get("window");
-const models = Object.values(MODELS);
-const imageModels = Object.values(IMAGE_MODELS);
-const _themes = Object.values(themes).map((v) => ({
-  name: v.name,
-  label: v.label,
-}));
+
+const iconMap: Record<string, any> = {
+  claude: AnthropicIcon,
+  gpt: OpenAIIcon,
+  gemini: GeminiIcon,
+  nanoBanana: GeminiIcon,
+};
+
+function getIcon(type: string, props: any) {
+  const Icon =
+    Object.entries(iconMap).find(([key]) => type.includes(key))?.[1] ||
+    GeminiIcon;
+  return <Icon {...props} />;
+}
+
+const ChoiceList = ({
+  items,
+  selected,
+  onSelect,
+  theme,
+  showIcon = false,
+}: {
+  items: any[];
+  selected: string;
+  onSelect: (label: string) => void;
+  theme: any;
+  showIcon?: boolean;
+}) => {
+  return (
+    <View style={styles.buttonContainer}>
+      {items.map((item) => {
+        const isSelected = selected === item.label;
+        return (
+          <TouchableHighlight
+            key={item.label}
+            underlayColor="transparent"
+            onPress={() => onSelect(item.label)}
+          >
+            <View
+              style={[
+                styles.chatChoiceButton,
+                isSelected && { backgroundColor: theme.tintColor },
+              ]}
+            >
+              {showIcon &&
+                getIcon(item.label, {
+                  theme,
+                  size: 18,
+                  style: { marginRight: 8 },
+                  color: isSelected ? theme.tintTextColor : theme.textColor,
+                  selected: isSelected,
+                })}
+              <Text
+                style={[
+                  styles.chatTypeText,
+                  { color: isSelected ? theme.tintTextColor : theme.textColor },
+                ]}
+              >
+                {item.name}
+              </Text>
+            </View>
+          </TouchableHighlight>
+        );
+      })}
+    </View>
+  );
+};
 
 export function Settings() {
   const { theme, setTheme, themeName } = useContext(ThemeContext);
@@ -29,191 +89,74 @@ export function Settings() {
 
   const styles = getStyles(theme);
 
-  function renderIcon({ type, props }: IIconProps) {
-    if (type.includes("claude")) {
-      return <AnthropicIcon {...props} />;
-    }
-    if (type.includes("gpt")) {
-      return <OpenAIIcon {...props} />;
-    }
-    if (type.includes("gemini")) {
-      return <GeminiIcon {...props} />;
-    }
-    if (type.includes("nanoBanana")) {
-      return <GeminiIcon {...props} />;
-    }
-    return <GeminiIcon {...props} />;
-  }
+  const themeItems = Object.values(themes).map((v) => ({
+    name: v.name,
+    label: v.label,
+  }));
 
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
-      <View style={styles.titleContainer}>
-        <Text style={styles.mainText}>Current Theme</Text>
-      </View>
-      {_themes.map((value, index) => (
-        <TouchableHighlight
-          key={index}
-          underlayColor="transparent"
-          onPress={() => {
-            setTheme(value.label);
-          }}
-        >
-          <View
-            style={{
-              ...styles.chatChoiceButton,
-              ...getDynamicViewStyle(themeName, value.label, theme),
-            }}
-          >
-            <Text
-              style={{
-                ...styles.chatTypeText,
-                ...getDynamicTextStyle(themeName, value.label, theme),
-              }}
-            >
-              {value.name}
-            </Text>
-          </View>
-        </TouchableHighlight>
-      ))}
-      <View style={styles.titleContainer}>
-        <Text style={styles.mainText}>Chat Model</Text>
-      </View>
-      <View style={styles.buttonContainer}>
-        {models.map((model, index) => {
-          return (
-            <TouchableHighlight
-              key={index}
-              underlayColor="transparent"
-              onPress={() => {
-                setChatType(model);
-              }}
-            >
-              <View
-                style={{
-                  ...styles.chatChoiceButton,
-                  ...getDynamicViewStyle(chatType.label, model.label, theme),
-                }}
-              >
-                {renderIcon({
-                  type: model.label,
-                  props: {
-                    theme,
-                    size: 18,
-                    style: { marginRight: 8 },
-                    selected: chatType.label === model.label,
-                  },
-                })}
-                <Text
-                  style={{
-                    ...styles.chatTypeText,
-                    ...getDynamicTextStyle(chatType.label, model.label, theme),
-                  }}
-                >
-                  {model.name}
-                </Text>
-              </View>
-            </TouchableHighlight>
-          );
-        })}
-      </View>
-      <View style={styles.titleContainer}>
-        <Text style={styles.mainText}>Image Model</Text>
-      </View>
-      <View style={styles.buttonContainer}>
-        {imageModels.map((model, index) => {
-          return (
-            <TouchableHighlight
-              key={index}
-              underlayColor="transparent"
-              onPress={() => {
-                setImageModel(model.label);
-              }}
-            >
-              <View
-                style={{
-                  ...styles.chatChoiceButton,
-                  ...getDynamicViewStyle(imageModel, model.label, theme),
-                }}
-              >
-                {renderIcon({
-                  type: model.label,
-                  props: {
-                    theme,
-                    size: 18,
-                    style: { marginRight: 8 },
-                    color:
-                      imageModel === model.label
-                        ? theme.tintTextColor
-                        : theme.textColor,
-                  },
-                })}
-                <Text
-                  style={{
-                    ...styles.chatTypeText,
-                    ...getDynamicTextStyle(imageModel, model.label, theme),
-                  }}
-                >
-                  {model.name}
-                </Text>
-              </View>
-            </TouchableHighlight>
-          );
-        })}
-      </View>
+      <Text style={styles.sectionTitle}>Current Theme</Text>
+      <ChoiceList
+        items={themeItems}
+        selected={themeName}
+        onSelect={setTheme}
+        theme={theme}
+      />
+
+      <Text style={styles.sectionTitle}>Chat Model</Text>
+      <ChoiceList
+        items={Object.values(MODELS)}
+        selected={chatType.label}
+        onSelect={setChatType}
+        theme={theme}
+        showIcon
+      />
+
+      <Text style={styles.sectionTitle}>Image Model</Text>
+      <ChoiceList
+        items={Object.values(IMAGE_MODELS)}
+        selected={imageModel}
+        onSelect={setImageModel}
+        theme={theme}
+        showIcon
+      />
     </ScrollView>
   );
 }
 
-function getDynamicTextStyle(baseType: string, type: string, theme: any) {
-  if (type === baseType) {
-    return {
-      color: theme.tintTextColor,
-    };
-  } else return {};
-}
-
-function getDynamicViewStyle(baseType: string, type: string, theme: any) {
-  if (type === baseType) {
-    return {
-      backgroundColor: theme.tintColor,
-    };
-  } else return {};
-}
-
 const getStyles = (theme: any) =>
   StyleSheet.create({
-    buttonContainer: {
-      marginBottom: 20,
-    },
     container: {
-      padding: 14,
       flex: 1,
-      backgroundColor: theme.backgroundColor,
+      padding: 14,
       paddingTop: 10,
+      backgroundColor: theme.backgroundColor,
     },
     contentContainer: {
       paddingBottom: 40,
     },
-    titleContainer: {
+    sectionTitle: {
+      fontFamily: theme.boldFont,
+      fontSize: 17,
+      color: theme.textColor,
       paddingVertical: 10,
       paddingHorizontal: 15,
       marginTop: 10,
+    },
+    buttonContainer: {
+      marginBottom: 20,
     },
     chatChoiceButton: {
       padding: 12,
       borderRadius: 8,
       flexDirection: "row",
+      alignItems: "center",
     },
     chatTypeText: {
       fontFamily: theme.semiBoldFont,
-      color: theme.textColor,
-    },
-    mainText: {
-      fontFamily: theme.boldFont,
-      fontSize: 17,
-      color: theme.textColor,
     },
   });
