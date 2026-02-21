@@ -42,6 +42,8 @@ const ChoiceList = ({
   theme: any;
   showIcon?: boolean;
 }) => {
+  const styles = getStyles(theme);
+
   return (
     <View style={styles.buttonContainer}>
       {items.map((item) => {
