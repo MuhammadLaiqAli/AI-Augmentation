@@ -1,11 +1,11 @@
-import { Request, Response } from "express"
+import { Request, Response } from "express";
 
-const endpoint = 'https://api.openai.com/v1/files'
+const endpoint = "https://api.openai.com/v1/files";
 
 export async function uploadFile(req: Request, res: Response) {
   try {
-    const { prompt, codeInterpreter }  = req.body
+    const { prompt, codeInterpreter } = req.body;
   } catch (err) {
-    console.log('error in assistant chat: ', err)
+    console.log("error in assistant chat: ", err);
   }
 }
