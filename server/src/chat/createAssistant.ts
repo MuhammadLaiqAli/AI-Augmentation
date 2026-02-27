@@ -9,7 +9,7 @@ interface Body {
   tools?: any[];
 }
 
-export async function createAssistant(req: Request, res: Response) {
+async function createAssistant(req: Request, res: Response) {
   try {
     const { instructions, input } = req.body;
     const file = req.file;
