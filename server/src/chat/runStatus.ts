@@ -24,7 +24,7 @@ export async function runStatus(req: Request, res: Response) {
       return res.json(json);
     } else {
       return res.json({
-        status: "running",
+        status: "running private chat",
       });
     }
   } catch (err) {
