@@ -1,46 +1,25 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
 import { Request, Response } from "express";
 
-export async function gemini(req: Request, res: Response) {
+export async function getThreadMessages(req: Request, res: Response) {
   try {
-    res.writeHead(200, {
-      "Content-Type": "text/event-stream",
-      Connection: "keep-alive",
-      "Cache-Control": "no-cache",
+    const { thread_id } = req.body;
+    const headers = {
+      "OpenAI-Beta": "assistants=v1",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+    };
+    const response = await fetch(
+      `https://api.openai.com/v1/threads/${thread_id}/messages`,
+      {
+        headers,
+      },
+    ).then((res) => res.json());
+
+    return res.json({
+      success: true,
+      data: response,
     });
-    const { prompt } = req.body;
-    if (!prompt) {
-      return res.json({
-        error: "no prompt",
-      });
-    }
-
-    const genAIInit = new GoogleGenerativeAI(`${process.env.GEMINI_API_KEY}`);
-
-    const model = genAIInit.getGenerativeModel({
-      model: "gemini-3-pro-preview",
-    });
-
-    const geminiResult = await model.generateContentStream(prompt);
-
-    if (geminiResult && geminiResult.stream) {
-      await streamToStdout(geminiResult.stream, res);
-    } else {
-      res.end();
-    }
   } catch (err) {
-    console.log("error in Gemini chat: ", err);
-    res.write("data: [DONE]\n\n");
-    res.end();
+    console.log("error in assistant chat: ", err);
   }
-}
-
-export async function streamToStdout(stream: any, res: Response) {
-  for await (const chunk of stream) {
-    const chunkText = chunk.text();
-    res.write(`data: ${JSON.stringify(chunkText)}\n\n`);
-  }
-  res.write("data: [DONE]\n\n");
-  res.end();
 }
