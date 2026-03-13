@@ -1,27 +1,94 @@
 import { Request, Response } from "express";
 
-// not in use yet, not complete
+type GeminiImageModel = "nanoBanana" | "nanoBananaPro";
 
-export async function runResponse(req: Request, res: Response) {
+const geminiModels: Record<GeminiImageModel, string> = {
+  nanoBanana: "gemini-2.5-flash-image",
+  nanoBananaPro: "gemini-3-pro-image-preview",
+};
+
+const geminiApiBase = "https://generativelanguage.googleapis.com/v1beta/models";
+
+function getInlineData(part: any) {
+  return part?.inlineData || part?.inline_data;
+}
+
+export async function geminiImage(req: Request, res: Response) {
   try {
-    const { thread_id } = req.body;
-    const headers = {
-      "OpenAI-Beta": "assistants=v1",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-    };
+    const { prompt, model } = req.body;
+    const selectedModel = geminiModels[model as GeminiImageModel];
+
+    if (!selectedModel) {
+      return res.json({
+        error: "unsupported model",
+      });
+    }
+
+    if (!prompt && !req.file) {
+      return res.json({
+        error: "no prompt",
+      });
+    }
+
+    const parts: any[] = [];
+    if (prompt) {
+      parts.push({ text: prompt });
+    }
+
+    if (req.file) {
+      parts.push({
+        inline_data: {
+          mime_type: req.file.mimetype,
+          data: req.file.buffer.toString("base64"),
+        },
+      });
+    }
+
     const response = await fetch(
-      `https://api.openai.com/v1/threads/${thread_id}/runs`,
+      `${geminiApiBase}/${selectedModel}:generateContent`,
       {
-        headers,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": process.env.GEMINI_API_KEY || "",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts,
+            },
+          ],
+          generationConfig: {
+            responseModalities: ["TEXT", "IMAGE"],
+          },
+        }),
       },
     );
-    const json = await response.json();
-    console.log("json: ", json);
+
+    const data = await response.json();
+    const responseParts = data?.candidates?.[0]?.content?.parts || [];
+    const imagePart = responseParts.find((part: any) => {
+      const inlineData = getInlineData(part);
+      return inlineData?.data;
+    });
+    const inlineData = getInlineData(imagePart);
+
+    if (!inlineData?.data) {
+      return res.json({
+        error: "error generating image",
+        details: data,
+      });
+    }
+
+    const mimeType = inlineData.mimeType || inlineData.mime_type || "image/png";
+
     return res.json({
-      success: true,
+      image: `data:${mimeType};base64,${inlineData.data}`,
     });
   } catch (err) {
-    console.log("error in assistant chat: ", err);
+    console.log("error generating Gemini image: ", err);
+    return res.json({
+      error: "error generating image",
+    });
   }
 }
